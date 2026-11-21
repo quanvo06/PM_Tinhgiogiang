@@ -1,0 +1,16 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio & macOS cache
+.vs/
+*.user
+*.suo
+.DS_Store
+
+# NuGet Packages (Visual Studio sẽ tự tải lại bằng Restore NuGet)
+packages/
