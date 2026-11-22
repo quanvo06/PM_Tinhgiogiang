@@ -8,6 +8,15 @@ namespace PM_Tinhgiogiang_Winform
         private System.ComponentModel.IContainer components = null;
         private SplitContainer splitMain;
         private DataGridView dgvMonHoc, dgvBaiHoc;
+
+        // Form Môn học (bên trái dưới)
+        private TextBox txtMaMon, txtTenMon;
+        private ComboBox cboMonBoMon, cboMonHeDT;
+        private NumericUpDown numSoTinChi, numTietLT, numTietTH;
+        private CheckBox chkMonNgoaiNgu;
+        private Button btnMonMoi, btnMonLuu, btnMonXoa;
+
+        // Form Bài học (bên phải dưới)
         private TextBox txtTenBai;
         private NumericUpDown numThuTu, numSoTiet;
         private ComboBox cboLoaiBai, cboGVMacDinh;
@@ -27,24 +36,62 @@ namespace PM_Tinhgiogiang_Winform
 
             this.SuspendLayout();
             this.Font = WinFormStyleHelper.DefaultFont;
-            this.Text = "Môn học & Đề cương Bài học (4.7 & 4.8)";
+            this.Text = "Môn học && Đề cương Bài học (4.7 && 4.8)";
 
             this.splitMain.Dock = DockStyle.Fill;
-            this.splitMain.SplitterDistance = 460;
+            WinFormStyleHelper.ConfigureSplitContainer(this.splitMain, 0.46, 380, 440);
+
+            // LEFT: Top = Môn học Grid, Bottom = Form Thêm/Sửa Môn học
+            Panel pnlAddMon = new Panel { Dock = DockStyle.Bottom, Height = 195, BackColor = Color.White, Padding = new Padding(8), BorderStyle = BorderStyle.FixedSingle };
+            TableLayoutPanel tblMon = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 4, RowCount = 5 };
+            tblMon.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 82F));
+            tblMon.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tblMon.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 82F));
+            tblMon.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+
+            this.txtMaMon = new TextBox { Dock = DockStyle.Fill };
+            this.txtTenMon = new TextBox { Dock = DockStyle.Fill };
+            this.cboMonBoMon = new ComboBox { Dock = DockStyle.Fill, DropDownStyle = ComboBoxStyle.DropDownList };
+            this.cboMonHeDT = new ComboBox { Dock = DockStyle.Fill, DropDownStyle = ComboBoxStyle.DropDownList };
+            this.numSoTinChi = new NumericUpDown { Dock = DockStyle.Fill, DecimalPlaces = 1, Increment = 0.5M, Minimum = 0.5M, Maximum = 20M, Value = 2M };
+            this.numTietLT = new NumericUpDown { Dock = DockStyle.Fill, Minimum = 0, Maximum = 200, Value = 30 };
+            this.numTietTH = new NumericUpDown { Dock = DockStyle.Fill, Minimum = 0, Maximum = 200, Value = 0 };
+            this.chkMonNgoaiNgu = new CheckBox { Text = "Dạy bằng ngoại ngữ", AutoSize = true };
+
+            this.btnMonMoi = new Button { Text = "+ Mới", Width = 68, Height = 28 }; this.btnMonMoi.Click += this.btnMonMoi_Click;
+            this.btnMonLuu = new Button { Text = "Lưu Môn", Width = 86, Height = 28, BackColor = WinFormStyleHelper.AccentColor, ForeColor = Color.White, FlatStyle = FlatStyle.Flat }; this.btnMonLuu.Click += this.btnMonLuu_Click;
+            this.btnMonXoa = new Button { Text = "Xóa Môn", Width = 82, Height = 28 }; this.btnMonXoa.Click += this.btnMonXoa_Click;
+
+            tblMon.Controls.Add(new Label { Text = "Mã môn *", AutoSize = true }, 0, 0); tblMon.Controls.Add(this.txtMaMon, 1, 0);
+            tblMon.Controls.Add(new Label { Text = "Số TC", AutoSize = true }, 2, 0); tblMon.Controls.Add(this.numSoTinChi, 3, 0);
+
+            tblMon.Controls.Add(new Label { Text = "Tên môn *", AutoSize = true }, 0, 1); tblMon.Controls.Add(this.txtTenMon, 1, 1); tblMon.SetColumnSpan(this.txtTenMon, 3);
+
+            tblMon.Controls.Add(new Label { Text = "Bộ môn *", AutoSize = true }, 0, 2); tblMon.Controls.Add(this.cboMonBoMon, 1, 2);
+            tblMon.Controls.Add(new Label { Text = "Hệ ĐT", AutoSize = true }, 2, 2); tblMon.Controls.Add(this.cboMonHeDT, 3, 2);
+
+            tblMon.Controls.Add(new Label { Text = "Tiết LT", AutoSize = true }, 0, 3); tblMon.Controls.Add(this.numTietLT, 1, 3);
+            tblMon.Controls.Add(new Label { Text = "Tiết TH", AutoSize = true }, 2, 3); tblMon.Controls.Add(this.numTietTH, 3, 3);
+
+            FlowLayoutPanel flpMonBtn = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
+            flpMonBtn.Controls.AddRange(new Control[] { this.chkMonNgoaiNgu, this.btnMonMoi, this.btnMonLuu, this.btnMonXoa });
+            tblMon.Controls.Add(flpMonBtn, 0, 4); tblMon.SetColumnSpan(flpMonBtn, 4);
+            pnlAddMon.Controls.Add(tblMon);
 
             Label lblMon = new Label { Text = "Danh sách Môn học (DM_MonHoc)", Dock = DockStyle.Top, Height = 28, Font = WinFormStyleHelper.BoldFont };
             WinFormStyleHelper.ConfigureGrid(this.dgvMonHoc);
             this.dgvMonHoc.SelectionChanged += this.dgvMonHoc_SelectionChanged;
             this.splitMain.Panel1.Controls.Add(this.dgvMonHoc);
             this.splitMain.Panel1.Controls.Add(lblMon);
+            this.splitMain.Panel1.Controls.Add(pnlAddMon);
 
-            // Right panel: Top = Bài học Grid, Bottom = Form thêm bài
+            // RIGHT: Top = Bài học Grid, Bottom = Form thêm bài
             Panel pnlAddBai = new Panel { Dock = DockStyle.Bottom, Height = 128, BackColor = Color.White, Padding = new Padding(8), BorderStyle = BorderStyle.FixedSingle };
             TableLayoutPanel tbl = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 4, RowCount = 3 };
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 18F));
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 32F));
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 18F));
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 32F));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92F));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92F));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
 
             this.numThuTu = new NumericUpDown { Dock = DockStyle.Fill, Minimum = 1, Maximum = 100, Value = 1 };
             this.cboLoaiBai = new ComboBox { Dock = DockStyle.Fill, DropDownStyle = ComboBoxStyle.DropDownList };
@@ -57,7 +104,7 @@ namespace PM_Tinhgiogiang_Winform
             this.btnXoaBai.Click += this.btnXoaBai_Click;
 
             tbl.Controls.Add(new Label { Text = "Thứ tự", AutoSize = true }, 0, 0); tbl.Controls.Add(this.numThuTu, 1, 0);
-            tbl.Controls.Add(new Label { Text = "Loại / Số tiết", AutoSize = true }, 2, 0);
+            tbl.Controls.Add(new Label { Text = "Loại / Tiết", AutoSize = true }, 2, 0);
             FlowLayoutPanel flpLT = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
             this.cboLoaiBai.Width = 70; this.numSoTiet.Width = 60;
             flpLT.Controls.AddRange(new Control[] { this.cboLoaiBai, this.numSoTiet });

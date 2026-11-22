@@ -12,6 +12,7 @@ namespace PM_Tinhgiogiang_Winform
     {
         private readonly DanhMucService _dmService;
         private List<LopHocPhan> _allLops = new List<LopHocPhan>();
+        private int _selectedLopId = 0;
 
         public frmLopHocPhan_NhomHoc()
         {
@@ -24,7 +25,27 @@ namespace PM_Tinhgiogiang_Winform
         {
             cboLoaiNhom.Items.AddRange(new object[] { "LT", "TH", "TT" });
             cboLoaiNhom.SelectedIndex = 0;
+            cboLopLoai.Items.AddRange(new object[] { "LT", "TH", "TT", "LT+TH" });
+            cboLopLoai.SelectedIndex = 0;
+            NapDanhMucLop();
             NapDuLieu();
+        }
+
+        private void NapDanhMucLop()
+        {
+            try
+            {
+                cboLopMonHoc.DataSource = lib.LayDanhSachMonHoc();
+                cboLopMonHoc.DisplayMember = "TenMonHoc";
+                cboLopMonHoc.ValueMember = "MaMonHoc";
+
+                cboLopHocKy.DataSource = lib.LayDanhSachHocKy();
+                cboLopHocKy.DisplayMember = "TenHK";
+                cboLopHocKy.ValueMember = "ID_HocKy";
+                if (SessionHelper.CurrentHocKyId.HasValue)
+                    cboLopHocKy.SelectedValue = SessionHelper.CurrentHocKyId.Value;
+            }
+            catch { }
         }
 
         private void NapDuLieu()
@@ -43,6 +64,8 @@ namespace PM_Tinhgiogiang_Winform
                     l.SiSoDangKy,
                     l.TrangThai
                 }).ToList();
+                if (dgvLopHP.Columns["ID_LopHocPhan"] != null)
+                    dgvLopHP.Columns["ID_LopHocPhan"].Visible = false;
 
                 clbLopGop.Items.Clear();
                 foreach (LopHocPhan l in _allLops)
@@ -58,8 +81,63 @@ namespace PM_Tinhgiogiang_Winform
                     n.DanhSachMaLopHP,
                     n.TongSiSoNhom
                 }).ToList();
+                if (dgvNhomHoc.Columns["ID_NhomHoc"] != null)
+                    dgvNhomHoc.Columns["ID_NhomHoc"].Visible = false;
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải Lớp HP / Nhóm học: " + ex.Message); }
+        }
+
+        private void dgvLopHP_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvLopHP.CurrentRow == null || dgvLopHP.CurrentRow.Cells["ID_LopHocPhan"] == null) return;
+            _selectedLopId = Convert.ToInt32(dgvLopHP.CurrentRow.Cells["ID_LopHocPhan"].Value);
+            LopHocPhan lhp = _allLops.FirstOrDefault(x => x.ID_LopHocPhan == _selectedLopId);
+            if (lhp == null) return;
+
+            txtMaLopHP.Text = lhp.MaLopHocPhan;
+            cboLopMonHoc.SelectedValue = lhp.MaMonHoc;
+            cboLopHocKy.SelectedValue = lhp.ID_HocKy;
+            int idx = cboLopLoai.Items.IndexOf(lhp.LoaiLopHP ?? "LT");
+            cboLopLoai.SelectedIndex = idx >= 0 ? idx : 0;
+            numLopSiSo.Value = Math.Max(numLopSiSo.Minimum, Math.Min(numLopSiSo.Maximum, lhp.SiSoDangKy));
+        }
+
+        private void btnLopMoi_Click(object sender, EventArgs e)
+        {
+            _selectedLopId = 0;
+            txtMaLopHP.Clear();
+            numLopSiSo.Value = 60;
+            txtMaLopHP.Focus();
+        }
+
+        private void btnLopLuu_Click(object sender, EventArgs e)
+        {
+            if (cboLopMonHoc.SelectedValue == null || !(cboLopHocKy.SelectedValue is int))
+            {
+                MessageBox.Show("Vui lòng tạo ít nhất 1 Môn học và 1 Học kỳ trước khi thêm Lớp học phần.");
+                return;
+            }
+            KetQuaThaoTac res = lib.LuuLopHocPhan(new LopHocPhan
+            {
+                ID_LopHocPhan = _selectedLopId,
+                MaLopHocPhan = txtMaLopHP.Text.Trim(),
+                MaMonHoc = cboLopMonHoc.SelectedValue.ToString(),
+                ID_HocKy = (int)cboLopHocKy.SelectedValue,
+                LoaiLopHP = cboLopLoai.Text,
+                SiSoDangKy = (int)numLopSiSo.Value,
+                TrangThai = "Mo"
+            });
+            MessageBox.Show(res.ThongBao, res.ThanhCong ? "Thành công" : "Lỗi");
+            if (res.ThanhCong) { btnLopMoi_Click(sender, e); NapDuLieu(); }
+        }
+
+        private void btnLopXoa_Click(object sender, EventArgs e)
+        {
+            if (_selectedLopId <= 0) return;
+            if (MessageBox.Show("Xóa lớp học phần đang chọn?", "Xác nhận", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+            KetQuaThaoTac res = lib.XoaLopHocPhan(_selectedLopId);
+            MessageBox.Show(res.ThongBao);
+            if (res.ThanhCong) { btnLopMoi_Click(sender, e); NapDuLieu(); }
         }
 
         private void btnGopTaoNhom_Click(object sender, EventArgs e)

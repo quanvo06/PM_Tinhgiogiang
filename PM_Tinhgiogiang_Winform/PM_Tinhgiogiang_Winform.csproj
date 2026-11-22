@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PM_Tinhgiogiang_Winform</RootNamespace>
     <AssemblyName>PM_Tinhgiogiang</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -83,6 +83,12 @@
     <Compile Include="frmMonHoc_BaiHoc.Designer.cs">
       <DependentUpon>frmMonHoc_BaiHoc.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmNamHoc_HocKy_TietHoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmNamHoc_HocKy_TietHoc.Designer.cs">
+      <DependentUpon>frmNamHoc_HocKy_TietHoc.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmPhanCongGiangDay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,6 +100,18 @@
     </Compile>
     <Compile Include="frmPhongHoc.Designer.cs">
       <DependentUpon>frmPhongHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmQuanLyDanhMuc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmQuanLyDanhMuc.Designer.cs">
+      <DependentUpon>frmQuanLyDanhMuc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmQuanLyNguoiDung.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmQuanLyNguoiDung.Designer.cs">
+      <DependentUpon>frmQuanLyNguoiDung.cs</DependentUpon>
     </Compile>
     <Compile Include="frmQuyTacQuyDoi.cs">
       <SubType>Form</SubType>
@@ -121,13 +139,74 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
     <Compile Include="WinFormStyleHelper.cs" />
+    <EmbeddedResource Include="frmDangNhap.resx">
+      <DependentUpon>frmDangNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGiangVien.resx">
+      <DependentUpon>frmGiangVien.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmKiemTraXuatBan.resx">
+      <DependentUpon>frmKiemTraXuatBan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmLopHocPhan_NhomHoc.resx">
+      <DependentUpon>frmLopHocPhan_NhomHoc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMonHoc_BaiHoc.resx">
+      <DependentUpon>frmMonHoc_BaiHoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNamHoc_HocKy_TietHoc.resx">
+      <DependentUpon>frmNamHoc_HocKy_TietHoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPhanCongGiangDay.resx">
+      <DependentUpon>frmPhanCongGiangDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPhongHoc.resx">
+      <DependentUpon>frmPhongHoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmQuanLyDanhMuc.resx">
+      <DependentUpon>frmQuanLyDanhMuc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmQuanLyNguoiDung.resx">
+      <DependentUpon>frmQuanLyNguoiDung.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmQuyTacQuyDoi.resx">
+      <DependentUpon>frmQuyTacQuyDoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTongHopGioChuan.resx">
+      <DependentUpon>frmTongHopGioChuan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTongQuan.resx">
+      <DependentUpon>frmTongQuan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmXepLich.resx">
+      <DependentUpon>frmXepLich.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PM_Tinhgiogiang_Lib\PM_Tinhgiogiang_Lib.csproj">

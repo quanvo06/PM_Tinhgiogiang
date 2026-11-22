@@ -41,6 +41,10 @@ namespace PM_Tinhgiogiang_Winform
                 cboHocVi.DataSource = _dmService.LayDanhMucTheoNhom(2);
                 cboHocVi.DisplayMember = "TenDanhMuc";
                 cboHocVi.ValueMember = "MaDanhMuc";
+
+                cboMgNamHoc.DataSource = lib.LayDanhSachNamHoc();
+                cboMgNamHoc.DisplayMember = "TenNH";
+                cboMgNamHoc.ValueMember = "ID_NamHoc";
             }
             catch { }
         }
@@ -161,5 +165,78 @@ namespace PM_Tinhgiogiang_Winform
         }
 
         private void btnLamMoi_Click(object sender, EventArgs e) { NapDanhSachGV(); }
+
+        private void btnThemRB_Click(object sender, EventArgs e)
+        {
+            if (_selectedGVId <= 0) { MessageBox.Show("Vui lòng chọn giảng viên trước."); return; }
+            int thuVal;
+            int? thu = (cboRbThu.SelectedIndex > 0 && int.TryParse(cboRbThu.Text, out thuVal)) ? (int?)thuVal : null;
+            string buoi = cboRbBuoi.SelectedIndex > 0 ? cboRbBuoi.Text : null;
+
+            KetQuaThaoTac res = lib.ThemRangBuocGiangVien(new GiangVienRangBuoc
+            {
+                ID_GV = _selectedGVId,
+                NgayBD = dtpRbBD.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                NgayKT = dtpRbKT.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                ThuTrongTuan = thu,
+                BuoiTrongNgay = buoi,
+                LyDo = txtRbLyDo.Text.Trim()
+            });
+            MessageBox.Show(res.ThongBao);
+            if (res.ThanhCong)
+            {
+                txtRbLyDo.Clear();
+                GiangVien gv = _allGVs.FirstOrDefault(x => x.ID_GV == _selectedGVId);
+                if (gv != null) NapChiTiet5Tab(gv);
+            }
+        }
+
+        private void btnXoaRB_Click(object sender, EventArgs e)
+        {
+            if (dgvRangBuoc.CurrentRow == null || dgvRangBuoc.CurrentRow.Cells["ID_RangBuoc"] == null) return;
+            int idRb = Convert.ToInt32(dgvRangBuoc.CurrentRow.Cells["ID_RangBuoc"].Value);
+            KetQuaThaoTac res = lib.XoaRangBuocGiangVien(idRb);
+            MessageBox.Show(res.ThongBao);
+            if (res.ThanhCong)
+            {
+                GiangVien gv = _allGVs.FirstOrDefault(x => x.ID_GV == _selectedGVId);
+                if (gv != null) NapChiTiet5Tab(gv);
+            }
+        }
+
+        private void btnThemMG_Click(object sender, EventArgs e)
+        {
+            if (_selectedGVId <= 0) { MessageBox.Show("Vui lòng chọn giảng viên trước."); return; }
+            if (!(cboMgNamHoc.SelectedValue is int)) { MessageBox.Show("Vui lòng tạo Năm học trước."); return; }
+
+            KetQuaThaoTac res = lib.ThemMienGiamGiangVien(new MienGiamDinhMuc
+            {
+                ID_GV = _selectedGVId,
+                ID_NamHoc = (int)cboMgNamHoc.SelectedValue,
+                TyLeGiamPhanTram = (double)numMgTyLe.Value,
+                SoGioGiam = (double)numMgSoGio.Value,
+                LyDo = txtMgLyDo.Text.Trim()
+            });
+            MessageBox.Show(res.ThongBao);
+            if (res.ThanhCong)
+            {
+                txtMgLyDo.Clear();
+                GiangVien gv = _allGVs.FirstOrDefault(x => x.ID_GV == _selectedGVId);
+                if (gv != null) NapChiTiet5Tab(gv);
+            }
+        }
+
+        private void btnXoaMG_Click(object sender, EventArgs e)
+        {
+            if (dgvMienGiam.CurrentRow == null || dgvMienGiam.CurrentRow.Cells["ID_MienGiam"] == null) return;
+            int idMg = Convert.ToInt32(dgvMienGiam.CurrentRow.Cells["ID_MienGiam"].Value);
+            KetQuaThaoTac res = lib.XoaMienGiamGiangVien(idMg);
+            MessageBox.Show(res.ThongBao);
+            if (res.ThanhCong)
+            {
+                GiangVien gv = _allGVs.FirstOrDefault(x => x.ID_GV == _selectedGVId);
+                if (gv != null) NapChiTiet5Tab(gv);
+            }
+        }
     }
 }
