@@ -11,13 +11,14 @@ namespace PM_Tinhgiogiang_Winform
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using (frmDangNhap loginForm = new frmDangNhap())
-            {
-                if (loginForm.ShowDialog() == DialogResult.OK)
-                {
-                    Application.Run(new frmMain());
-                }
-            }
+            //using (frmDangNhap loginForm = new frmDangNhap())
+            //{
+            //if (loginForm.ShowDialog() == DialogResult.OK)
+            //{
+            //Application.Run(new frmMain());
+            //}
+            //}
+            Application.Run(new frmMain());
         }
     }
 }
